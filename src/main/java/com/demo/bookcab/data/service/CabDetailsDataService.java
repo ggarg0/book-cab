@@ -31,6 +31,7 @@ public class CabDetailsDataService {
 
 	public List<Cabs> getCabDetailsByCabName(String cabName) {
 		List<Cabs> cabDetails = new ArrayList<>();
+
 		cabDetails = getAllCabDetails().stream().filter(cab -> cab.getCab_name().equalsIgnoreCase(cabName))
 				.collect(Collectors.toList());
 

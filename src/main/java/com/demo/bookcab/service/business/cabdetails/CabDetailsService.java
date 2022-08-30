@@ -29,7 +29,7 @@ public interface CabDetailsService {
 	 * @return {List of @link Cabs}
 	 * 
 	 */
-	List<Cabs> getCabDetailsByCabName(String cabName);
+	List<CabDetailsResponse> getCabDetailsByCabName(String cabName);
 	
 	/**
 	 * <p>

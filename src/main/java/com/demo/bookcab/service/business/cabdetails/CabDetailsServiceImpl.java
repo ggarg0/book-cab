@@ -1,6 +1,8 @@
 package com.demo.bookcab.service.business.cabdetails;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,10 @@ public class CabDetailsServiceImpl implements CabDetailsService {
 
 	@Override
 	public CabDetailsResponse getCabDetailsByCabNumber(String cabNumber) {
+		if (Objects.isNull(cabNumber)) {
+			return (new CabDetailsResponse(cabNumber, null, null, 0.0, null, MessageConstants.InvalidCarNumber));
+
+		}
 
 		Cabs cab = null;
 		try {
@@ -36,8 +42,30 @@ public class CabDetailsServiceImpl implements CabDetailsService {
 	}
 
 	@Override
-	public List<Cabs> getCabDetailsByCabName(String cabName) {
-		return this.cabDetailsDataService.getCabDetailsByCabName(cabName);
+	public List<CabDetailsResponse> getCabDetailsByCabName(String cabName) {
+		List<Cabs> cabs = null;
+		List<CabDetailsResponse> cabsResponse = new ArrayList<CabDetailsResponse>();
+
+		if (Objects.isNull(cabName)) {
+			cabsResponse.add(new CabDetailsResponse(null, cabName, null, 0.0, null, MessageConstants.InvalidCarName));
+			return cabsResponse;
+		}
+
+		try {
+			cabs = this.cabDetailsDataService.getCabDetailsByCabName(cabName);
+
+		} catch (CabDetailsNotFoundException exp) {
+			cabsResponse
+					.add(new CabDetailsResponse(null, cabName, null, 0.0, null, MessageConstants.CabDetailsNotFound));
+			return cabsResponse;
+		}
+
+		for (Cabs cab : cabs) {
+			cabsResponse.add(new CabDetailsResponse(cab.getCab_number(), cab.getCab_name(), cab.getDriver_name(),
+					cab.getRate(), cab.getStatus(), ""));
+		}
+
+		return cabsResponse;
 	}
 
 	@Override

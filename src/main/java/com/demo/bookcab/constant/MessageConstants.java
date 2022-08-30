@@ -11,6 +11,10 @@ public class MessageConstants {
 
 	public static final String InvalidBalanceInquiry = "Please enter a non Empty balance inquiry.";
 	
+	public static final String InvalidCarNumber = "Car number can not be empty";
+	
+	public static final String InvalidCarName = "Car name can not be empty";
+	
 	public static final String InvalidTripInquiry = "Please enter a valid trip inquiry.";
 
 	public static final String UserNameNotFound = "User name not found.";
