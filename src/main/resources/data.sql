@@ -25,10 +25,10 @@
  */
 
 INSERT INTO USER_ACCOUNT (first_name, last_name, user_name, email, wallet_pin, wallet_balance, wallet_balance_onhold)
-VALUES ('Adam', 'Sandler', 1234567890, 'adam@hollywood.com', '$2a$10$AVI6e8rkyn.9Y93Yrbu9/.YM8plIBGZ33PUQy57U1fXw34uXT9mNC', 800, 0),
-	   ('Brad', 'Pitt', 2345678901, 'brad@hollywood.com', '$2a$10$BkDnsFV/DA1.fIZ0l6BkEOcWxYMc3313nN2uD0YYNLKkwx6cgY/y.', 500, 0),
-	   ('Mark', 'Waugh', 3456789012, 'mark@cricket.com', '$2a$10$2qcBY05Bo2W9VrlX7HUm1ONdc0OwTu5qF7382DOFlB3tnMydEpdl2', 1500, 0),
-       ('Chris', 'Gayle', 4567890123, 'chris@cricket.com', '$2a$10$k2QUCfZf.t7dAHC3OvwdyO01yl5sNHhewaGBwyZRuCx/3LuzTQpPq', 1230, 0);
+VALUES ('Adam', 'Sandler', '1234567890', 'adam@hollywood.com', '$2a$10$AVI6e8rkyn.9Y93Yrbu9/.YM8plIBGZ33PUQy57U1fXw34uXT9mNC', 800, 0),
+	   ('Brad', 'Pitt', '2345678901', 'brad@hollywood.com', '$2a$10$BkDnsFV/DA1.fIZ0l6BkEOcWxYMc3313nN2uD0YYNLKkwx6cgY/y.', 500, 0),
+	   ('Mark', 'Waugh', '3456789012', 'mark@cricket.com', '$2a$10$2qcBY05Bo2W9VrlX7HUm1ONdc0OwTu5qF7382DOFlB3tnMydEpdl2', 1500, 0),
+       ('Chris', 'Gayle', '4567890123', 'chris@cricket.com', '$2a$10$k2QUCfZf.t7dAHC3OvwdyO01yl5sNHhewaGBwyZRuCx/3LuzTQpPq', 1230, 0);
 
 INSERT INTO CAB_DETAILS (cab_name, cab_number, driver_name, rate, status)
 VALUES ('SWIFT', 'UP16AA1111', 'Arun', 15, 'Available'),

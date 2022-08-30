@@ -56,7 +56,8 @@ CREATE TABLE TRIP_DETAILS (
       location_to VARCHAR(250) NOT NULL,
       fare DOUBLE NOT NULL,
       user_name VARCHAR(250) NOT NULL,
-      cab_number VARCHAR(250) NOT NULL
+      cab_number VARCHAR(250) NOT NULL,
+      status VARCHAR(250) NOT NULL
 );
 
 
