@@ -24,5 +24,6 @@ public class Trips {
 	private Double fare;
 	private String user_name;
 	private String cab_number;
+	private long booking_id;
 	private String status;
 }

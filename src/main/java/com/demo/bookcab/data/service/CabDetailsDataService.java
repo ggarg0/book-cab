@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.demo.bookcab.constant.MessageConstants;
 import com.demo.bookcab.entity.Cabs;
+import com.demo.bookcab.entity.Trips;
 import com.demo.bookcab.exceptions.CabDetailsNotFoundException;
 import com.demo.bookcab.repository.CabDetailsRepository;
 
@@ -32,8 +33,8 @@ public class CabDetailsDataService {
 	public List<Cabs> getCabDetailsByCabName(String cabName) {
 		List<Cabs> cabDetails = new ArrayList<>();
 
-		cabDetails = getAllCabDetails().stream().filter(cab -> cab.getCab_name().equalsIgnoreCase(cabName))
-				.collect(Collectors.toList());
+		cabDetails = getAllCabDetails().stream().filter(cab -> cab.getCab_name().equalsIgnoreCase(cabName)
+				&& cab.getStatus().equalsIgnoreCase(MessageConstants.Available)).collect(Collectors.toList());
 
 		if (cabDetails.isEmpty()) {
 			throw new CabDetailsNotFoundException(MessageConstants.CabDetailsNotFound);
@@ -52,6 +53,10 @@ public class CabDetailsDataService {
 
 	public void saveAllCabDetails(List<Cabs> cabDetails) {
 		this.cabDetailsRepository.saveAll(cabDetails);
+	}
+
+	public void saveCabDetails(Cabs cabDetails) {
+		this.cabDetailsRepository.save(cabDetails);
 	}
 
 }

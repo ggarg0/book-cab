@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "USER_ACCOUNT")
+@Table(name = "RIDER_ACCOUNT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAccount {
+public class Rider {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;

@@ -24,8 +24,8 @@
  *
  */
 
-DROP TABLE IF EXISTS USER_ACCOUNT;
-CREATE TABLE USER_ACCOUNT (
+DROP TABLE IF EXISTS RIDER_ACCOUNT;
+CREATE TABLE RIDER_ACCOUNT (
                               id INT AUTO_INCREMENT  PRIMARY KEY,
                               first_name VARCHAR(250) NOT NULL,
                               last_name VARCHAR(250) NOT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE USER_ACCOUNT (
                               wallet_balance DOUBLE,
                               wallet_balance_onhold DOUBLE
 );
-ALTER TABLE USER_ACCOUNT ADD CONSTRAINT email_uq UNIQUE(email);
-ALTER TABLE USER_ACCOUNT ADD CONSTRAINT user_name_uq UNIQUE(user_name);
+ALTER TABLE RIDER_ACCOUNT ADD CONSTRAINT email_uq UNIQUE(email);
+ALTER TABLE RIDER_ACCOUNT ADD CONSTRAINT user_name_uq UNIQUE(user_name);
 
 DROP TABLE IF EXISTS CAB_DETAILS;
 CREATE TABLE CAB_DETAILS (
@@ -57,9 +57,11 @@ CREATE TABLE TRIP_DETAILS (
       fare DOUBLE NOT NULL,
       user_name VARCHAR(250) NOT NULL,
       cab_number VARCHAR(250) NOT NULL,
+      booking_id LONG NOT NULL,
       status VARCHAR(250) NOT NULL
 );
 
+ALTER TABLE TRIP_DETAILS ADD CONSTRAINT booking_id_uq UNIQUE(booking_id);
 
 DROP TABLE IF EXISTS LOCATION_DETAILS;
 CREATE TABLE LOCATION_DETAILS (
@@ -68,6 +70,6 @@ CREATE TABLE LOCATION_DETAILS (
       location_sequence INT NOT NULL,
       pickup_count INT default 0,
       drop_count INT default 0,
-      tariff DOUBLE
+      distance DOUBLE
 );
 ALTER TABLE LOCATION_DETAILS ADD CONSTRAINT location_name_uq UNIQUE(location_name);

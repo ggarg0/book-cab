@@ -10,23 +10,24 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JourneyDetailsRequest {
-	@Pattern(regexp = "^[0-9]{5}", message = "Card number can only be number and that to 5 digits only")
-	@NotBlank(message = "Card number cannot be blank")
-	private String cardNumber;
+public class BookingRequest {
+	@Pattern(regexp = "^[0-9]{10}", message = "Username can only be number and that to 10 digits only")
+	@NotBlank(message = "Username cannot be blank")
+	private String userName;
 
 	@Pattern(regexp = "^[0-9]{4}", message = "Pin can only be number and that to 4 digits only")
 	@NotBlank(message = "PIN cannot be blank")
-	private String pin;
+	private String walletPin;
+	
+	@NotBlank(message = "Cab name cannot be blank")
+	private String cabName;
 
 	@Pattern(regexp = "^[A-Z]{1}[0-9]{1}", message = "Station can have 2 digits with letter followed by a number")
-	@NotBlank(message = "Station cannot be blank")
-	private String stationIn;
+	@NotBlank(message = "Pickup cannot be blank")
+	private String pickUp;
 
 	@Pattern(regexp = "^[A-Z]{1}[0-9]{1}", message = "Station can have 2 digits with letter followed by a number")
-	@NotBlank(message = "Station cannot be blank")
-	private String stationOut;
-
-	private String message;
+	@NotBlank(message = "Drop cannot be blank")
+	private String drop;
 
 }

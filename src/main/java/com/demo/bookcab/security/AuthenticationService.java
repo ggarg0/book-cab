@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.demo.bookcab.entity.UserAccount;
+import com.demo.bookcab.entity.Rider;
 
 @Service
 public class AuthenticationService {
@@ -15,7 +15,7 @@ public class AuthenticationService {
 		return new BCryptPasswordEncoder(10);
 	}
 
-	public Boolean authenticateUserAccount(UserAccount account, String pinPlainText) {
+	public Boolean authenticateRiderAccount(Rider account, String pinPlainText) {
 		return this.passwordEncoder().matches(pinPlainText, account.getWallet_pin());
 	}
 

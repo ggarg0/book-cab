@@ -23,6 +23,6 @@ public class Locations {
 	private Integer location_sequence;
 	private Integer pickup_count;
 	private Integer drop_count;
-	private Long tariff;
+	private Double distance;
 
 }

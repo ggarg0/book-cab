@@ -51,5 +51,9 @@ public class LocationDetailsDataService {
 	public void saveAllLocationDetails(List<Locations> locationDetails) {
 		this.locationDetailsRepository.saveAll(locationDetails);
 	}
+	
+	public void saveLocationDetails(Locations locationDetails) {
+		this.locationDetailsRepository.save(locationDetails);
+	}
 
 }
