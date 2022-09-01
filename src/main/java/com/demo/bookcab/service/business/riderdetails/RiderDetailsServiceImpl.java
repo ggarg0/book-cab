@@ -60,33 +60,33 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param balanceInquiry {@link RiderInquiry} details for getting account
+	 * @param riderInquiry {@link RiderInquiry} details for getting account
 	 *                       information.
 	 * @return
 	 */
-	public RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry balanceInquiry) {
-		if (Objects.isNull(balanceInquiry)) {
+	public RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry riderInquiry) {
+		if (Objects.isNull(riderInquiry)) {
 			return new RiderInquiryResponse(null, null, null, null, 0.0, 0.0, MessageConstants.InvalidBalanceInquiry);
 		}
 
 		// Fetch details from DB.
 		Rider rider = null;
 		try {
-			rider = riderDetailsDataService.getRiderAccountDetails(balanceInquiry.getUserName());
+			rider = riderDetailsDataService.getRiderAccountDetails(riderInquiry.getUserName());
 
 		} catch (RiderNotFoundException exp) {
-			return new RiderInquiryResponse(balanceInquiry.getUserName(), null, null, null, 0.0, 0.0,
+			return new RiderInquiryResponse(riderInquiry.getUserName(), null, null, null, 0.0, 0.0,
 					MessageConstants.RiderNotFound);
 		}
 
 		// Authenticate
-		if (this.authenticationService.authenticateRiderAccount(rider, balanceInquiry.getWalletPin())) {
+		if (this.authenticationService.authenticateRiderAccount(rider, riderInquiry.getWalletPin())) {
 			// Respond Balance.
 			return new RiderInquiryResponse(rider.getUser_name(), rider.getFirst_name(), rider.getLast_name(),
 					rider.getEmail(), rider.getWallet_balance(), rider.getWallet_balance_onhold(), "");
 
 		} else {
-			return new RiderInquiryResponse(balanceInquiry.getUserName(), null, null, null, 0.0, 0.0,
+			return new RiderInquiryResponse(riderInquiry.getUserName(), null, null, null, 0.0, 0.0,
 					MessageConstants.InvalidPin);
 		}
 

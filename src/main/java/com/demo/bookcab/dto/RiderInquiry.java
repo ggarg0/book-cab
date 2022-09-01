@@ -22,6 +22,6 @@ public class RiderInquiry {
 
 	@Override
 	public String toString() {
-		return "BalanceInquiry{" + " userName='" + userName + ", walletPin= *****" + '\'' + '}';
+		return "RiderInquiry{" + " userName='" + userName + ", walletPin= *****" + '\'' + '}';
 	}
 }

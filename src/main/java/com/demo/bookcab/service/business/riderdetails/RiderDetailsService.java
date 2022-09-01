@@ -13,21 +13,21 @@ public interface RiderDetailsService {
 	/**
 	 * <p>
 	 * This method should return the balance details of the card holder as
-	 * balanceInquiryResponse.
+	 * RiderInquiryResponse.
 	 * </p>
 	 * <br>
-	 * This method should check the card PIN from the balanceInquiry request and
+	 * This method should check the card PIN from the riderInquiry request and
 	 * authenticate against the user pin <br>
 	 * On successful authentication this method should provide the details of card
 	 * holder <br>
-	 * else should respond with the BalanceInquiryResponse as card pin not correct.
+	 * else should respond with the RiderInquiryResponse as card pin not correct.
 	 *
-	 * @param balanceInquiry {@link RiderInquiry} details for getting card
+	 * @param riderInquiry {@link RiderInquiry} details for getting rider
 	 *                       information.
-	 * @return {@link RiderInquiryResponse} A balance inquiry response for the
-	 *         requested {@BalanceInquiry}
+	 * @return {@link RiderInquiryResponse} A rider inquiry response for the
+	 *         requested {@RiderInquiry}
 	 */
-	RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry balanceInquiry);
+	RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry riderInquiry);
 
 	/**
 	 * This method should return the details of all accounts <br>

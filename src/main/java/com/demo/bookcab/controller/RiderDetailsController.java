@@ -38,7 +38,7 @@ public class RiderDetailsController {
 	 * successful validation, The requested users balance amount will be returned.
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.RiderInquiry} A custom
+	 * @param riderInquiry {@link com.demo.bookcab.dto.RiderInquiry} A custom
 	 *                       balance inquiry object.
 	 * @return {@link com.demo.bookcab.dto.RiderInquiryResponse}. Account details
 	 *         for user.
@@ -49,8 +49,8 @@ public class RiderDetailsController {
 			@ApiResponse(responseCode = "200", description = "Will respond with account details for rider", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = RiderInquiryResponse.class)) }) })
 	@PostMapping("balance")
-	public RiderInquiryResponse getBalanceDetailsForRider(@Valid @RequestBody RiderInquiry balanceInquiry) {
-		return this.riderDetails.getBalanceDetailsForRider(balanceInquiry);
+	public RiderInquiryResponse getBalanceDetailsForRider(@Valid @RequestBody RiderInquiry riderInquiry) {
+		return this.riderDetails.getBalanceDetailsForRider(riderInquiry);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class RiderDetailsController {
 	 * balance, insufficient balance message would be returned
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 * @param tripRequest {@link com.demo.bookcab.dto.TripRequest} A custom trip
 	 *                       details object.
 	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
 	 *         response for rider.
@@ -101,7 +101,7 @@ public class RiderDetailsController {
 	 * case of trip not found, trip not found message would be returned
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 * @param bookingIdRequest {@link com.demo.bookcab.dto.BookingIdRequest} A custom trip
 	 *                       details object.
 	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
 	 *         response for rider.
@@ -124,7 +124,7 @@ public class RiderDetailsController {
 	 * of trip not found, trip not found message would be returned
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 * @param bookingIdRequest {@link com.demo.bookcab.dto.BookingIdRequest} A custom trip
 	 *                       details object.
 	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
 	 *         response for rider.
