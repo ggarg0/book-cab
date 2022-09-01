@@ -2,22 +2,12 @@ package com.demo.bookcab.service.business.riderdetails;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import com.demo.bookcab.dto.BalanceInquiry;
-import com.demo.bookcab.dto.BalanceInquiryResponse;
-import com.demo.bookcab.dto.BookingDetailsResponse;
-import com.demo.bookcab.dto.BookingRequest;
+import com.demo.bookcab.dto.RiderInquiry;
+import com.demo.bookcab.dto.RiderInquiryResponse;
+import com.demo.bookcab.dto.BookingIdRequest;
+import com.demo.bookcab.dto.TripDetailsResponse;
+import com.demo.bookcab.dto.TripRequest;
 import com.demo.bookcab.entity.Rider;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 public interface RiderDetailsService {
 	/**
@@ -32,12 +22,12 @@ public interface RiderDetailsService {
 	 * holder <br>
 	 * else should respond with the BalanceInquiryResponse as card pin not correct.
 	 *
-	 * @param balanceInquiry {@link BalanceInquiry} details for getting card
+	 * @param balanceInquiry {@link RiderInquiry} details for getting card
 	 *                       information.
-	 * @return {@link BalanceInquiryResponse} A balance inquiry response for the
+	 * @return {@link RiderInquiryResponse} A balance inquiry response for the
 	 *         requested {@BalanceInquiry}
 	 */
-	BalanceInquiryResponse getBalanceDetailsForRider(BalanceInquiry balanceInquiry);
+	RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry balanceInquiry);
 
 	/**
 	 * This method should return the details of all accounts <br>
@@ -49,29 +39,31 @@ public interface RiderDetailsService {
 
 	/**
 	 * <p>
-	 * This method should save the account details.
+	 * This method should book a cab for rider. 1) In case of sufficient balance,
+	 * cab will be booked for rider 2) In case of insufficient balance, insufficient
+	 * balance message would be returned
 	 * </p>
-	 * <br>
-	 * 
-	 * @param {List of @link Rider}
-	 *
 	 */
-	void saveAllRiderAccountDetails(List<Rider> riderDetails);
+
+	TripDetailsResponse BookCabForRider(TripRequest bookingRequest);
 
 	/**
 	 * <p>
-	 * This controller method will authenticate the pin for user, On successful
-	 * validation, tariff for the journey will be calculated. 1) In case of
-	 * sufficient balance, cab will be booked for rider 2) In case of insufficient
-	 * balance, insufficient balance message would be returned
+	 * This method should complete a cab booking/trip for rider. 1) In case of trip
+	 * found, complete the trip by updating the cab, trip and rider details 2) In
+	 * case of trip not found, trip not found message would be returned
 	 * </p>
-	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.BookingRequest} A custom
-	 *                       trip details object.
-	 * @return {@link com.demo.bookcab.dto.BookingDetailsResponse}. Trip details
-	 *         response for rider.
 	 */
 
-	BookingDetailsResponse BookCabForRider(BookingRequest bookingRequest);
+	TripDetailsResponse CompleteRiderTrip(BookingIdRequest bookingIdRequest);
 
+	/**
+	 * <p>
+	 * This method should cancel a cab booking of rider. 1) In case of trip found,
+	 * cancel the trip by updating the cab, trip and rider details 2) In case of
+	 * trip not found, trip not found message would be returned
+	 * </p>
+	 */
+
+	TripDetailsResponse CancelRiderTrip(BookingIdRequest bookingIdRequest);
 }

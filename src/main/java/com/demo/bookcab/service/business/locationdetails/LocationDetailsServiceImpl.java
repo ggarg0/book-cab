@@ -28,9 +28,4 @@ public class LocationDetailsServiceImpl implements LocationDetailsService {
 		return this.locationDetailsDataService.getAllLocationFootfall();
 	}
 
-	@Override
-	public void saveAllLocationDetails(List<Locations> locationDetails) {
-		this.locationDetailsDataService.saveAllLocationDetails(locationDetails);
-	}
-
 }

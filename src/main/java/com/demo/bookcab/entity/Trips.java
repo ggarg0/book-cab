@@ -19,9 +19,10 @@ public class Trips {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String location_from;
-	private String location_to;
+	private String location_pickup;
+	private String location_drop;
 	private Double fare;
+	private Double distance;
 	private String user_name;
 	private String cab_number;
 	private long booking_id;

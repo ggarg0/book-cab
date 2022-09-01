@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.bookcab.dto.BalanceInquiry;
-import com.demo.bookcab.dto.BalanceInquiryResponse;
-import com.demo.bookcab.dto.BookingDetailsResponse;
-import com.demo.bookcab.dto.BookingRequest;
+import com.demo.bookcab.dto.RiderInquiry;
+import com.demo.bookcab.dto.RiderInquiryResponse;
+import com.demo.bookcab.dto.BookingIdRequest;
+import com.demo.bookcab.dto.TripDetailsResponse;
+import com.demo.bookcab.dto.TripRequest;
 import com.demo.bookcab.entity.Rider;
 import com.demo.bookcab.service.business.riderdetails.RiderDetailsService;
 
@@ -37,18 +38,18 @@ public class RiderDetailsController {
 	 * successful validation, The requested users balance amount will be returned.
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.BalanceInquiry} A custom
+	 * @param balanceInquiry {@link com.demo.bookcab.dto.RiderInquiry} A custom
 	 *                       balance inquiry object.
-	 * @return {@link com.demo.bookcab.dto.BalanceInquiryResponse}. Account details
+	 * @return {@link com.demo.bookcab.dto.RiderInquiryResponse}. Account details
 	 *         for user.
 	 */
 
 	@Operation(summary = "Get the wallet balance for rider")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Will respond with account details for rider", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = BalanceInquiryResponse.class)) }) })
+					@Content(mediaType = "application/json", schema = @Schema(implementation = RiderInquiryResponse.class)) }) })
 	@PostMapping("balance")
-	public BalanceInquiryResponse getBalanceDetailsForRider(@Valid @RequestBody BalanceInquiry balanceInquiry) {
+	public RiderInquiryResponse getBalanceDetailsForRider(@Valid @RequestBody RiderInquiry balanceInquiry) {
 		return this.riderDetails.getBalanceDetailsForRider(balanceInquiry);
 	}
 
@@ -68,30 +69,73 @@ public class RiderDetailsController {
 	public List<Rider> getAllRiderAccountDetails() {
 		return this.riderDetails.getAllRiderAccountDetails();
 	}
-	
+
 	/**
 	 * <p>
 	 * This controller method will authenticate the pin for user, On successful
-	 * validation, tariff for the journey will be calculated. 
-	 * 1) In case of
-	 * sufficient balance, cab will be booked for rider
-	 * 2) In case of insufficient balance, insufficient balance message
-	 * would be returned
+	 * validation, tariff for the journey will be calculated. 1) In case of
+	 * sufficient balance, cab will be booked for rider 2) In case of insufficient
+	 * balance, insufficient balance message would be returned
 	 * </p>
 	 *
-	 * @param balanceInquiry {@link com.demo.bookcab.dto.BookingRequest} A
-	 *                       custom trip details object.
-	 * @return {@link com.demo.bookcab.dto.BookingDetailsResponse}. Trip
-	 *         details response for rider.
+	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 *                       details object.
+	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
+	 *         response for rider.
 	 */
 
-	@Operation(summary = "Book a cab and get booking details for rider")
+	@Operation(summary = "Book a cab and get trip details for rider")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Will respond with cab booking details for trip", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = BookingDetailsResponse.class)) }) })
-	@PostMapping("book-cab")
-	public BookingDetailsResponse BookCabForRider(
-			@Valid @RequestBody BookingRequest bookingRequest) {
-		return this.riderDetails.BookCabForRider(bookingRequest);
+					@Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsResponse.class)) }) })
+	@PostMapping("book-trip")
+	public TripDetailsResponse BookCabForRider(@Valid @RequestBody TripRequest tripRequest) {
+		return this.riderDetails.BookCabForRider(tripRequest);
+	}
+
+	/**
+	 * <p>
+	 * This controller method will authenticate the pin for user, On successful
+	 * validation, trip details will be searched using bookingId. 1) In case of trip
+	 * found, complete the trip by updating the cab, trip and rider details 2) In
+	 * case of trip not found, trip not found message would be returned
+	 * </p>
+	 *
+	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 *                       details object.
+	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
+	 *         response for rider.
+	 */
+
+	@Operation(summary = "Complete a cab booking and get trip details for rider")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Will respond with cab booking details after completing a trip", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsResponse.class)) }) })
+	@PostMapping("complete-trip")
+	public TripDetailsResponse CompleteRiderTrip(@Valid @RequestBody BookingIdRequest bookingIdRequest) {
+		return this.riderDetails.CompleteRiderTrip(bookingIdRequest);
+	}
+
+	/**
+	 * <p>
+	 * This controller method will authenticate the pin for user, On successful
+	 * validation, trip details will be searched using bookingId. 1) In case of trip
+	 * found, cancel the trip by updating the cab, trip and rider details 2) In case
+	 * of trip not found, trip not found message would be returned
+	 * </p>
+	 *
+	 * @param balanceInquiry {@link com.demo.bookcab.dto.TripRequest} A custom trip
+	 *                       details object.
+	 * @return {@link com.demo.bookcab.dto.TripDetailsResponse}. Trip details
+	 *         response for rider.
+	 */
+
+	@Operation(summary = "Cancel a cab booking and get refund details for rider")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Will respond with cab booking details after cancelling a trip", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsResponse.class)) }) })
+	@PostMapping("cancel-trip")
+	public TripDetailsResponse CancelRiderTrip(@Valid @RequestBody BookingIdRequest bookingIdRequest) {
+		return this.riderDetails.CancelRiderTrip(bookingIdRequest);
 	}
 }

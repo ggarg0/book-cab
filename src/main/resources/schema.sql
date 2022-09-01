@@ -52,8 +52,9 @@ ALTER TABLE CAB_DETAILS ADD CONSTRAINT cab_number_uq UNIQUE(cab_number);
 DROP TABLE IF EXISTS TRIP_DETAILS;
 CREATE TABLE TRIP_DETAILS (
       id INT AUTO_INCREMENT  PRIMARY KEY,
-      location_from VARCHAR(250) NOT NULL,
-      location_to VARCHAR(250) NOT NULL,
+      location_pickup VARCHAR(250) NOT NULL,
+      location_drop VARCHAR(250) NOT NULL,
+      distance DOUBLE NOT NULL,
       fare DOUBLE NOT NULL,
       user_name VARCHAR(250) NOT NULL,
       cab_number VARCHAR(250) NOT NULL,

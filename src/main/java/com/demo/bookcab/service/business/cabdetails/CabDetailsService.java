@@ -3,6 +3,8 @@ package com.demo.bookcab.service.business.cabdetails;
 import java.util.List;
 
 import com.demo.bookcab.dto.CabDetailsResponse;
+import com.demo.bookcab.dto.CabNameRequest;
+import com.demo.bookcab.dto.CabNumberRequest;
 import com.demo.bookcab.entity.Cabs;
 
 public interface CabDetailsService {
@@ -17,7 +19,7 @@ public interface CabDetailsService {
 	 * @return {@link CabDetailsResponse} A cab inquiry response for the requested
 	 *         cabNumber
 	 */
-	CabDetailsResponse getCabDetailsByCabNumber(String cabNumber);
+	CabDetailsResponse getCabDetailsByCabNumber(CabNumberRequest cabNumber);
 
 	/**
 	 * <p>
@@ -29,7 +31,7 @@ public interface CabDetailsService {
 	 * @return {List of @link Cabs}
 	 * 
 	 */
-	List<CabDetailsResponse> getCabDetailsByCabName(String cabName);
+	List<CabDetailsResponse> getCabDetailsByCabName(CabNameRequest cabName);
 	
 	/**
 	 * <p>
@@ -40,16 +42,5 @@ public interface CabDetailsService {
 	 * @return {List of @link Cabs}
 	 */
 	List<Cabs> getAllCabDetails();
-
-	/**
-	 * <p>
-	 * This method should save the cab details.
-	 * </p>
-	 * <br>
-	 * 
-	 * @param {List of @link Cabs}
-	 *
-	 */
-	void saveAllCabDetails(List<Cabs> cabDetails);
 
 }

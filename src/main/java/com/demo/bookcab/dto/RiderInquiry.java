@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BalanceInquiry {
+public class RiderInquiry {
 
 	@Pattern(regexp = "^[0-9]{10}", message = "User name can only be mobile number and that to 10 digits only")
 	@NotBlank(message = "User name cannot be blank")

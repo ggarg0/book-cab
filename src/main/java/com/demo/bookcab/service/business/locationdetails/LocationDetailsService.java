@@ -32,15 +32,4 @@ public interface LocationDetailsService {
 
 	List<LocationFootfallResponse> getAllLocationFootfall();
 
-	/**
-	 * <p>
-	 * This method should save the footfall details of all stations .
-	 * </p>
-	 * <br>
-	 * 
-	 * @param {List of @link Stations}
-	 *
-	 */
-	void saveAllLocationDetails(List<Locations> locationDetails);
-
 }
