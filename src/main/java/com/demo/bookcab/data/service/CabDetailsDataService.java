@@ -42,19 +42,6 @@ public class CabDetailsDataService {
 		return cabDetails;
 	}
 
-	public List<Cabs> getAvailableCabDetailsByCabName(String cabName) {
-		List<Cabs> cabDetails = new ArrayList<>();
-
-		cabDetails = getAllCabDetails().stream().filter(cab -> cab.getCab_name().equalsIgnoreCase(cabName)
-				&& cab.getStatus().equalsIgnoreCase(MessageConstants.Available)).collect(Collectors.toList());
-
-		if (cabDetails.isEmpty()) {
-			throw new CabDetailsNotFoundException(MessageConstants.CabDetailsNotFound);
-		}
-
-		return cabDetails;
-	}
-
 	public List<Cabs> getAllCabDetails() {
 		List<Cabs> cabDetails = new ArrayList<>();
 		this.cabDetailsRepository.findAll().forEach(cab -> {

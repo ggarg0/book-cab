@@ -9,10 +9,7 @@ import com.demo.bookcab.data.service.LocationDetailsDataService;
 import com.demo.bookcab.dto.LocationFootfallResponse;
 import com.demo.bookcab.entity.Locations;
 
-import lombok.Data;
-
 @Service
-@Data
 public class LocationDetailsServiceImpl implements LocationDetailsService {
 
 	@Autowired

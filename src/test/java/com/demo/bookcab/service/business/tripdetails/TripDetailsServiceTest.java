@@ -26,65 +26,131 @@
 
 package com.demo.bookcab.service.business.tripdetails;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.demo.bookcab.constant.MessageConstants;
+import com.demo.bookcab.data.service.CabDetailsDataService;
+import com.demo.bookcab.data.service.RiderDetailsDataService;
+import com.demo.bookcab.data.service.TripDetailsDataService;
+import com.demo.bookcab.dto.RiderInquiry;
+import com.demo.bookcab.dto.TripDetailsResponse;
+import com.demo.bookcab.entity.Trips;
 import com.demo.bookcab.security.AuthenticationService;
 
 @SpringBootTest
 public class TripDetailsServiceTest {
 
+	@Mock
+	private TripDetailsDataService tripDetailsDataService;
 
+	@Autowired
+	private RiderDetailsDataService riderDetailsDataService;
 
 	@Autowired
 	private AuthenticationService authenticationService;
 
+	@Autowired
+	private CabDetailsDataService cabDetailsDataService;
+
+	@InjectMocks
+	private TripDetailsServiceImpl tripDetailsServiceImpl;
+
 	@BeforeEach
 	public void setUp() {
+		when(tripDetailsDataService.getAllTripDetails()).then(new Answer<List<Trips>>() {
+			@Override
+			public List<Trips> answer(InvocationOnMock invocationOnMock) throws Throwable {
+				List<Trips> trip = new ArrayList<>();
+				trip.add(new Trips(1L, "A1", "A6", 100.0, 11.0, "1234567890", "CAR1", 112233445566l, "Completed"));
+				trip.add(new Trips(1L, "A1", "A4", 75.0, 8.0, "1234567890", "CAR4", 112233499566l, "Completed"));
+				trip.add(new Trips(2L, "A6", "A1", 100.0, 11.0, "2345678901", "CAR2", 112233775566l, "Completed"));
+				return trip;
+			}
+		});
 
-		
-	}
-/*
-	@Test
-	public void testJourneyDetailsForUserSuccess() {
-		JourneyDetailsRequest req = new JourneyDetailsRequest("11111", "1234", "A1", "A8", "");
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(req);
-		Assertions.assertTrue(resp.getMessage().contains(MessageConstants.Success));
-	}
+		when(tripDetailsDataService.getTripDetailsByUserName("1234567890")).then(new Answer<List<Trips>>() {
+			@Override
+			public List<Trips> answer(InvocationOnMock invocationOnMock) throws Throwable {
+				List<Trips> trip = new ArrayList<>();
+				trip.add(new Trips(1L, "A1", "A6", 100.0, 11.0, "1234567890", "CAR1", 112233445566l, "Completed"));
+				trip.add(new Trips(1L, "A1", "A4", 75.0, 8.0, "1234567890", "CAR4", 112233499566l, "Completed"));
+				return trip;
+			}
+		});
 
-	@Test
-	public void testNullJourneyInquiry() {
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(null);
-		Assertions.assertTrue(MessageConstants.InvalidJourneyInquiry.equalsIgnoreCase(resp.getMessage()));
-	}
+		when(tripDetailsDataService.getTripDetailsByUserName("2345678901")).then(new Answer<List<Trips>>() {
+			@Override
+			public List<Trips> answer(InvocationOnMock invocationOnMock) throws Throwable {
+				List<Trips> trip = new ArrayList<>();
+				return trip;
+			}
+		});
 
-	@Test
-	public void testInvalidCardHolderInquiry() {
-		JourneyDetailsRequest req = new JourneyDetailsRequest("unknown", "1234", "A1", "A8", "");
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(req);
-		Assertions.assertTrue(MessageConstants.CardNumberNotFound.equals(resp.getMessage()));
-	}
-
-	@Test
-	public void testIncorrectPinBalanceInquiry() {
-		JourneyDetailsRequest req = new JourneyDetailsRequest("11111", "1232", "A1", "A8", "");
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(req);
-		Assertions.assertTrue(MessageConstants.InvalidPin.equals(resp.getMessage()));
-	}
-
-	@Test
-	public void testInsufficientAmountInAccountMessage() {
-		JourneyDetailsRequest req = new JourneyDetailsRequest("11111", "1234", "A1", "A9", "");
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(req);
-		Assertions.assertTrue(resp.getMessage().equals(MessageConstants.InsufficientAmountInAccountMessage));
+		this.tripDetailsServiceImpl.setAuthenticationService(authenticationService);
+		this.tripDetailsServiceImpl.setCabDetailsDataService(cabDetailsDataService);
+		this.tripDetailsServiceImpl.setRiderDetailsDataService(riderDetailsDataService);
 	}
 
 	@Test
-	public void testInvalidStationInquiry() {
-		JourneyDetailsRequest req = new JourneyDetailsRequest("11111", "1234", "B1", "A8", "");
-		JourneyDetailsResponse resp = this.journeyDetailsServiceImpl.getJourneyDetailsForUser(req);
-		Assertions.assertTrue(MessageConstants.StationDetailsNotFound.equals(resp.getMessage()));
+	public void testSuccessGetAllTripDetails() {
+		List<Trips> response = this.tripDetailsServiceImpl.getAllTripsDetails();
+		Assertions.assertTrue(response.get(0).getCab_number().equalsIgnoreCase("CAR1"));
 	}
-	*/
+
+	@Test
+	public void testSuccessGetAllTripDetailsSize() {
+		List<Trips> response = this.tripDetailsServiceImpl.getAllTripsDetails();
+		Assertions.assertEquals(3, response.size());
+	}
+
+	@Test
+	public void testSuccessGetTripDetailsByUserName() {
+		RiderInquiry riderInquiry = new RiderInquiry("1234567890", "1234");
+		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
+		Assertions.assertEquals(2, response.size());
+	}
+
+	@Test
+	public void testInvalidPinGetTripDetailsByUserName() {
+		RiderInquiry riderInquiry = new RiderInquiry("1234567890", "1236");
+		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
+		Assertions.assertTrue(MessageConstants.InvalidPin.equals(response.get(0).getMessage()));
+	}
+
+	@Test
+	public void testInvalidBookingRequestGetTripDetailsByUserName() {
+		RiderInquiry riderInquiry = null;
+		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
+		Assertions.assertTrue(MessageConstants.BookingRequestNotValid.equals(response.get(0).getMessage()));
+	}
+
+	@Test
+	public void testRiderNotFoundGetTripDetailsByUserName() {
+		RiderInquiry riderInquiry = new RiderInquiry("2345678908", "4321");
+		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
+		Assertions.assertTrue(MessageConstants.RiderNotFound.equals(response.get(0).getMessage()));
+	}
+
+	@Test
+	public void testTripsNotFoundGetTripDetailsByUserName() {
+		RiderInquiry riderInquiry = new RiderInquiry("2345678901", "4321");
+		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
+		Assertions.assertTrue(MessageConstants.TripDetailsNotFound.equals(response.get(0).getMessage()));
+	}
+	
+	
+
 }

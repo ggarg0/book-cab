@@ -22,10 +22,10 @@ import com.demo.bookcab.exceptions.RiderNotFoundException;
 import com.demo.bookcab.exceptions.TripDetailsNotFoundException;
 import com.demo.bookcab.security.AuthenticationService;
 
-import lombok.Data;
+import lombok.Setter;
 
 @Service
-@Data
+@Setter
 public class TripDetailsServiceImpl implements TripDetailsService {
 
 	@Autowired
@@ -63,7 +63,7 @@ public class TripDetailsServiceImpl implements TripDetailsService {
 				logger.info("Fetching trip details from database");
 				List<Trips> trips = tripDetailsDataService.getTripDetailsByUserName(riderInquiry.getUserName());
 
-				if (Objects.isNull(trips)) {
+				if (Objects.isNull(trips) || trips.isEmpty()) {
 					throw new TripDetailsNotFoundException(MessageConstants.TripDetailsNotFound);
 				}
 

@@ -7,14 +7,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Entity
 @Table(name = "LOCATION_DETAILS")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Locations {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

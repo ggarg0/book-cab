@@ -44,26 +44,16 @@ public interface RiderDetailsService {
 	 * balance message would be returned
 	 * </p>
 	 */
-
 	TripDetailsResponse BookCabForRider(TripRequest bookingRequest);
 
 	/**
 	 * <p>
-	 * This method should complete a cab booking/trip for rider. 1) In case of trip
-	 * found, complete the trip by updating the cab, trip and rider details 2) In
-	 * case of trip not found, trip not found message would be returned
+	 * This method should complete or cancel a cab booking/trip for rider. 
+	 * 1) In case of complete trip found, complete the trip by updating the cab, trip and rider details 
+	 * 2) In case of cancel trip found, cancel the trip by updating the cab, trip and rider details 
+	 * 3) In case of trip not found, trip not found message would be returned
 	 * </p>
 	 */
+	TripDetailsResponse RiderTripTransaction(BookingIdRequest bookingIdRequest, String action);
 
-	TripDetailsResponse CompleteRiderTrip(BookingIdRequest bookingIdRequest);
-
-	/**
-	 * <p>
-	 * This method should cancel a cab booking of rider. 1) In case of trip found,
-	 * cancel the trip by updating the cab, trip and rider details 2) In case of
-	 * trip not found, trip not found message would be returned
-	 * </p>
-	 */
-
-	TripDetailsResponse CancelRiderTrip(BookingIdRequest bookingIdRequest);
 }

@@ -7,14 +7,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+
 @Entity
 @Table(name = "CAB_DETAILS")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Cabs {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

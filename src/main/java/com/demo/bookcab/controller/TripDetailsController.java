@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bookcab.dto.RiderInquiry;
 import com.demo.bookcab.dto.TripDetailsResponse;
-import com.demo.bookcab.entity.Cabs;
 import com.demo.bookcab.entity.Trips;
 import com.demo.bookcab.service.business.tripdetails.TripDetailsService;
 

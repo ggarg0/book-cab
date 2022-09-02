@@ -31,7 +31,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -40,6 +42,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.demo.bookcab.constant.MessageConstants;
 import com.demo.bookcab.data.service.CabDetailsDataService;
+import com.demo.bookcab.dto.CabDetailsResponse;
+import com.demo.bookcab.dto.CabNameRequest;
+import com.demo.bookcab.dto.CabNumberRequest;
 import com.demo.bookcab.entity.Cabs;
 import com.demo.bookcab.exceptions.CabDetailsNotFoundException;
 
@@ -48,7 +53,7 @@ public class CabDetailsServiceTest {
 
 	@Mock
 	private CabDetailsDataService cabDetailsDataService;
-	
+
 	@InjectMocks
 	private CabDetailsServiceImpl cabDetailsServiceImpl;
 
@@ -59,26 +64,10 @@ public class CabDetailsServiceTest {
 			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
 				List<Cabs> cabs = new ArrayList<>();
 				cabs.add(new Cabs(1L, "Swift", "CAR1", "ARUN", 11.0, "Available"));
-				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Booked"));
-				cabs.add(new Cabs(3L, "Alto", "CAR3", "AMAR", 10.0, "Booked"));
+				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Available"));
+				cabs.add(new Cabs(3L, "Alto", "CAR3", "AMAR", 10.0, "Available"));
 				cabs.add(new Cabs(4L, "Alto", "CAR4", "ABHI", 10.0, "Available"));
 				return cabs;
-			}
-		});
-
-		when(cabDetailsDataService.getAvailableCabDetailsByCabName("Alto")).then(new Answer<List<Cabs>>() {
-			@Override
-			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
-				List<Cabs> cabs = new ArrayList<>();
-				cabs.add(new Cabs(4L, "Alto", "CAR4", "ABHI", 10.0, "Available"));
-				return cabs;
-			}
-		});
-		
-		when(cabDetailsDataService.getAvailableCabDetailsByCabName("unknown")).then(new Answer<List<Cabs>>() {
-			@Override
-			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
-				throw new CabDetailsNotFoundException(MessageConstants.CabDetailsNotFound);
 			}
 		});
 		
@@ -87,11 +76,11 @@ public class CabDetailsServiceTest {
 			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
 				List<Cabs> cabs = new ArrayList<>();
 				cabs.add(new Cabs(1L, "Swift", "CAR1", "ARUN", 11.0, "Available"));
-				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Booked"));
+				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Available"));
 				return cabs;
 			}
 		});
-		
+
 		when(cabDetailsDataService.getCabDetailsByCabName("unknown")).then(new Answer<List<Cabs>>() {
 			@Override
 			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -103,7 +92,7 @@ public class CabDetailsServiceTest {
 			@Override
 			public List<Cabs> answer(InvocationOnMock invocationOnMock) throws Throwable {
 				List<Cabs> cabs = new ArrayList<>();
-				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Booked"));
+				cabs.add(new Cabs(2L, "Swift", "CAR2", "AJAY", 10.5, "Available"));
 				return cabs;
 			}
 		});
@@ -114,56 +103,67 @@ public class CabDetailsServiceTest {
 				throw new CabDetailsNotFoundException(MessageConstants.CabDetailsNotFound);
 			}
 		});
-		
-
-	}
-/*
-	@Test
-	public void testMockData() {
-		List<MetroCard> listOfAccounts = this.cardDetailsDataService.getAllCardDetails();
-		Assertions.assertEquals(4, listOfAccounts.size());
 	}
 
 	@Test
-	public void testSuccessBalanceinquiry() {
-		BalanceInquiry be = new BalanceInquiry("11111", "1234");
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(be);
-		Assertions.assertEquals(800, ber.getBalance());
+	public void testSuccessGetAllCabDetails() {
+		List<Cabs> response = this.cabDetailsServiceImpl.getAllCabDetails();
+		Assertions.assertTrue(response.get(0).getCab_name().equalsIgnoreCase("Swift"));
 	}
 
 	@Test
-	public void testSuccessBalanceinquiryUser() {
-		BalanceInquiry be = new BalanceInquiry("22222", "4321");
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(be);
-		Assertions.assertEquals(500, ber.getBalance());
+	public void testUnSuccessGetAllCabDetails() {
+		List<Cabs> response = this.cabDetailsServiceImpl.getAllCabDetails();
+		Assertions.assertFalse(response.get(0).getCab_name().equalsIgnoreCase("Alto"));
 	}
 
 	@Test
-	public void testUnSuccessBalanceinquiryUser() {
-		BalanceInquiry be = new BalanceInquiry("22222", "4321");
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(be);
-		Assertions.assertNotEquals(800, ber.getBalance());
-	}
-	
-	@Test
-	public void testIncorrectPinBalanceinquiry() {
-		BalanceInquiry be = new BalanceInquiry("11111", "1232");
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(be);
-		Assertions.assertTrue(MessageConstants.InvalidPin.equals(ber.getMessage()));
+	public void testSizeGetAllCabDetails() {
+		List<Cabs> response = this.cabDetailsServiceImpl.getAllCabDetails();
+		Assertions.assertEquals(4, response.size());
 	}
 
 	@Test
-	public void testInvalidCardHolderinquiry() {
-		BalanceInquiry be = new BalanceInquiry("unknown", "1234");
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(be);
-		Assertions.assertTrue(MessageConstants.CardNumberNotFound.equals(ber.getMessage()));
+	public void testSuccessGetAvailableCabDetailsByCabName() {
+
+		CabNameRequest cab = new CabNameRequest("Swift");
+		List<CabDetailsResponse> response = this.cabDetailsServiceImpl.getCabDetailsByCabName(cab);
+		Assertions.assertTrue(response.get(0).getCabName().equalsIgnoreCase("Swift"));
+		Assertions.assertEquals(2, response.size());
 	}
 
 	@Test
-	public void testNullBalanceinquiry() {
-		BalanceInquiryResponse ber = this.cardDetailsServiceImpl.getCardBalanceForUser(null);
-		System.out.println(ber);
-		Assertions.assertTrue(MessageConstants.InvalidBalanceInquiry.equalsIgnoreCase(ber.getMessage()));
+	public void testUnSuccessGetAvailableCabDetailsByCabName() {
+		CabNameRequest cab = new CabNameRequest("unknown");
+		List<CabDetailsResponse> response = this.cabDetailsServiceImpl.getCabDetailsByCabName(cab);
+		Assertions.assertTrue(MessageConstants.CabDetailsNotFound.equals(response.get(0).getMessage()));
 	}
-*/
+
+	@Test
+	public void testNullGetAvailableCabDetailsByCabName() {
+		CabNameRequest cab = null;
+		List<CabDetailsResponse> response = this.cabDetailsServiceImpl.getCabDetailsByCabName(cab);
+		Assertions.assertTrue(MessageConstants.InvalidCarName.equals(response.get(0).getMessage()));
+	}
+
+	@Test
+	public void testSuccessGetAvailableCabDetailsByCabNumber() {
+		CabNumberRequest cab = new CabNumberRequest("CAR2");
+		CabDetailsResponse response = this.cabDetailsServiceImpl.getCabDetailsByCabNumber(cab);
+		Assertions.assertTrue(response.getCabNumber().equalsIgnoreCase("CAR2"));
+	}
+
+	@Test
+	public void testUnSuccessGetAvailableCabDetailsByCabNumber() {
+		CabNumberRequest cab = new CabNumberRequest("unknown");
+		CabDetailsResponse response = this.cabDetailsServiceImpl.getCabDetailsByCabNumber(cab);
+		Assertions.assertTrue(MessageConstants.CabDetailsNotFound.equals(response.getMessage()));
+	}
+
+	@Test
+	public void testNullGetAvailableCabDetailsByCabNumber() {
+		CabNumberRequest cab = null;
+		CabDetailsResponse response = this.cabDetailsServiceImpl.getCabDetailsByCabNumber(cab);
+		Assertions.assertTrue(MessageConstants.InvalidCarNumber.equals(response.getMessage()));
+	}
 }

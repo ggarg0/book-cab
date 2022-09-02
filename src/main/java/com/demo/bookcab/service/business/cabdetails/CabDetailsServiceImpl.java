@@ -15,10 +15,7 @@ import com.demo.bookcab.dto.CabNumberRequest;
 import com.demo.bookcab.entity.Cabs;
 import com.demo.bookcab.exceptions.CabDetailsNotFoundException;
 
-import lombok.Data;
-
 @Service
-@Data
 public class CabDetailsServiceImpl implements CabDetailsService {
 
 	@Autowired
@@ -27,7 +24,7 @@ public class CabDetailsServiceImpl implements CabDetailsService {
 	@Override
 	public CabDetailsResponse getCabDetailsByCabNumber(CabNumberRequest cabNumber) {
 		if (Objects.isNull(cabNumber)) {
-			return (new CabDetailsResponse(cabNumber.getCabNumber(), null, null, 0.0, null,
+			return (new CabDetailsResponse(null, null, null, 0.0, null,
 					MessageConstants.InvalidCarNumber));
 		}
 
@@ -50,7 +47,7 @@ public class CabDetailsServiceImpl implements CabDetailsService {
 		List<CabDetailsResponse> cabsResponse = new ArrayList<CabDetailsResponse>();
 
 		if (Objects.isNull(cabName)) {
-			cabsResponse.add(new CabDetailsResponse(null, cabName.getCabName(), null, 0.0, null,
+			cabsResponse.add(new CabDetailsResponse(null, null, null, 0.0, null,
 					MessageConstants.InvalidCarName));
 			return cabsResponse;
 		}

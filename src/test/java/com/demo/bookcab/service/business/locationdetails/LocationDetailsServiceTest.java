@@ -86,7 +86,7 @@ public class LocationDetailsServiceTest {
 	public void testValidLocationsInquiry() {
 		List<Locations> locations = this.locationDetailsServiceImpl.getLocationDetails("A1", "A6");
 		Assertions.assertEquals(2, locations.size());
-	}
+	}		
 
 	@Test
 	public void testgetAllLocationsFootfall() {
@@ -95,5 +95,4 @@ public class LocationDetailsServiceTest {
 		Assertions.assertEquals(3, response.get(0).getDropCount());
 		Assertions.assertEquals(6, response.size());
 	}
-
 }

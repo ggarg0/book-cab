@@ -7,14 +7,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Entity
 @Table(name = "RIDER_ACCOUNT")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Rider {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

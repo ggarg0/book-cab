@@ -3,6 +3,7 @@ package com.demo.bookcab.service.business.riderdetails;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -34,10 +35,10 @@ import com.demo.bookcab.exceptions.RiderNotFoundException;
 import com.demo.bookcab.exceptions.TripDetailsNotFoundException;
 import com.demo.bookcab.security.AuthenticationService;
 
-import lombok.Data;
+import lombok.Setter;
 
 @Service
-@Data
+@Setter
 public class RiderDetailsServiceImpl implements RiderDetailsService {
 
 	@Autowired
@@ -61,7 +62,7 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 	 * {@inheritDoc}
 	 *
 	 * @param riderInquiry {@link RiderInquiry} details for getting account
-	 *                       information.
+	 *                     information.
 	 * @return
 	 */
 	public RiderInquiryResponse getBalanceDetailsForRider(RiderInquiry riderInquiry) {
@@ -89,7 +90,6 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 			return new RiderInquiryResponse(riderInquiry.getUserName(), null, null, null, 0.0, 0.0,
 					MessageConstants.InvalidPin);
 		}
-
 	}
 
 	@Override
@@ -106,7 +106,9 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 		}
 
 		List<Locations> locationsDetails = new ArrayList<Locations>();
+		List<Cabs> cabs = new ArrayList<Cabs>();
 		Cabs cabSelected = null;
+
 		double fare = 0;
 		double distance = 0;
 
@@ -126,7 +128,9 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 						bookingRequest.getDrop());
 
 				logger.info("Fetching cabs details from database");
-				cabSelected = cabDetailsDataService.getAvailableCabDetailsByCabName(bookingRequest.getCabName()).get(0);
+				cabs = cabDetailsDataService.getCabDetailsByCabName(bookingRequest.getCabName());
+				cabSelected = cabs.stream().filter(cab -> cab.getStatus().equalsIgnoreCase(MessageConstants.Available))
+						.collect(Collectors.toList()).get(0);
 
 				distance = calculateDistanceBetweenLocations(locationsDetails, bookingRequest.getPickUp(),
 						bookingRequest.getDrop());
@@ -194,104 +198,7 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 
 	@Transactional
 	@Override
-	public synchronized TripDetailsResponse CompleteRiderTrip(BookingIdRequest bookingRequest) {
-		if (Objects.isNull(bookingRequest)) {
-			return new TripDetailsResponse(null, null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
-					MessageConstants.InvalidBookingRequest);
-		}
-
-		List<Locations> locationsDetails = new ArrayList<Locations>();
-		Cabs cabSelected = null;
-		Rider rider = null;
-		Trips trip = null;
-		try {
-
-			logger.info("Fetching trip details from database");
-			trip = tripDetailsDataService.getTripDetailsByBookingId(bookingRequest.getBookingId());
-
-			if (Objects.isNull(trip)) {
-				throw new TripDetailsNotFoundException(MessageConstants.TripDetailsNotFound);
-			}
-
-			logger.info("Fetching rider details from database");
-			rider = riderDetailsDataService.getRiderAccountDetails(trip.getUser_name());
-
-			if (Objects.isNull(rider)) {
-				throw new RiderNotFoundException(MessageConstants.RiderNotFound);
-			}
-
-			if (!rider.getUser_name().equalsIgnoreCase(bookingRequest.getUserName())) {
-				throw new RiderMismatchFoundException(MessageConstants.RiderMismatchFound);
-			}
-
-			if (this.authenticationService.authenticateRiderAccount(rider, bookingRequest.getWalletPin())) {
-
-				logger.info("Fetching location details from database");
-				locationsDetails = locationDetailsDataService.getLocationDetails(trip.getLocation_pickup(),
-						trip.getLocation_drop());
-
-				logger.info("Fetching cabs details from database");
-				cabSelected = cabDetailsDataService.getCabDetailsByCabNumber(trip.getCab_number()).get(0);
-
-				logger.info("Update and persist ride details");
-				rider.setWallet_balance_onhold(
-						Formatters.formatDecimalRoundToTwo(rider.getWallet_balance_onhold() - trip.getFare()));
-				riderDetailsDataService.saveRiderAccountDetails(rider);
-
-				logger.info("Update and persist location details");
-				updateLocationFootfallCount(locationsDetails, trip.getLocation_pickup(), trip.getLocation_drop());
-				locationDetailsDataService.saveAllLocationDetails(locationsDetails);
-
-				logger.info("Update and persist cab details");
-				cabSelected.setStatus(MessageConstants.Available);
-				cabDetailsDataService.saveCabDetails(cabSelected);
-
-				logger.info("Update and persist trip details");
-				trip.setStatus(MessageConstants.Completed);
-				tripDetailsDataService.saveTripDetails(trip);
-
-				return new TripDetailsResponse(bookingRequest.getUserName(), cabSelected.getCab_name(),
-						trip.getCab_number(), cabSelected.getDriver_name(), trip.getLocation_pickup(),
-						trip.getLocation_drop(),
-						calculateDistanceBetweenLocations(locationsDetails, trip.getLocation_pickup(),
-								trip.getLocation_drop()),
-						cabSelected.getRate(), trip.getFare(), rider.getWallet_balance(),
-						rider.getWallet_balance_onhold(), 0.0, trip.getStatus(), bookingRequest.getBookingId(),
-						"Trip completed successfully");
-
-			} else {
-				return new TripDetailsResponse(rider.getUser_name(), null, null, null, null, null, 0.0, 0.0, 0.0, 0.0,
-						0.0, 0.0, null, null, MessageConstants.InvalidPin);
-			}
-		} catch (RiderNotFoundException riderException) {
-			logger.error(MessageConstants.RiderNotFound);
-			return new TripDetailsResponse(trip.getUser_name(), null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0,
-					0.0, null, null, MessageConstants.RiderNotFound);
-		} catch (LocationDetailsNotFoundException locationException) {
-			logger.error(MessageConstants.LocationDetailsNotFound);
-			return new TripDetailsResponse(bookingRequest.getUserName(), null, null, null, trip.getLocation_pickup(),
-					trip.getLocation_drop(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
-					MessageConstants.LocationDetailsNotFound);
-		} catch (CabDetailsNotFoundException cabException) {
-			logger.error(MessageConstants.CabDetailsNotFound);
-			return new TripDetailsResponse(bookingRequest.getUserName(), null, trip.getCab_number(), null,
-					trip.getLocation_pickup(), trip.getLocation_drop(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
-					MessageConstants.CabDetailsNotFound);
-		} catch (TripDetailsNotFoundException tripException) {
-			logger.error(MessageConstants.TripDetailsNotFound);
-			return new TripDetailsResponse(null, null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null,
-					bookingRequest.getBookingId(), MessageConstants.TripDetailsNotFound);
-		} catch (RiderMismatchFoundException riderMismatchException) {
-			logger.error(MessageConstants.RiderMismatchFound);
-			return new TripDetailsResponse(bookingRequest.getUserName(), null, null, null, null, null, 0.0, 0.0, 0.0,
-					0.0, 0.0, 0.0, null, bookingRequest.getBookingId(), MessageConstants.RiderMismatchFound);
-		}
-
-	}
-
-	@Transactional
-	@Override
-	public synchronized TripDetailsResponse CancelRiderTrip(BookingIdRequest bookingRequest) {
+	public synchronized TripDetailsResponse RiderTripTransaction(BookingIdRequest bookingRequest, String action) {
 		if (Objects.isNull(bookingRequest)) {
 			return new TripDetailsResponse(null, null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
 					MessageConstants.InvalidBookingRequest);
@@ -307,18 +214,14 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 			logger.info("Fetching trip details from database");
 			trip = tripDetailsDataService.getTripDetailsByBookingId(bookingRequest.getBookingId());
 
-			if (Objects.isNull(trip)) {
-				throw new TripDetailsNotFoundException(MessageConstants.TripDetailsNotFound);
-			}
-
 			logger.info("Fetching rider details from database");
-			rider = riderDetailsDataService.getRiderAccountDetails(trip.getUser_name());
+			rider = riderDetailsDataService.getRiderAccountDetails(bookingRequest.getUserName());
 
 			if (Objects.isNull(rider)) {
 				throw new RiderNotFoundException(MessageConstants.RiderNotFound);
 			}
 
-			if (!rider.getUser_name().equalsIgnoreCase(bookingRequest.getUserName())) {
+			if (!trip.getUser_name().equalsIgnoreCase(rider.getUser_name())) {
 				throw new RiderMismatchFoundException(MessageConstants.RiderMismatchFound);
 			}
 
@@ -334,20 +237,33 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 				logger.info("Update and persist ride details");
 				rider.setWallet_balance_onhold(
 						Formatters.formatDecimalRoundToTwo(rider.getWallet_balance_onhold() - trip.getFare()));
-				rider.setWallet_balance(Formatters.formatDecimalRoundToTwo(rider.getWallet_balance() + trip.getFare()));
+				if (action.equalsIgnoreCase(MessageConstants.Cancel)) {
+					rider.setWallet_balance(
+							Formatters.formatDecimalRoundToTwo(rider.getWallet_balance() + trip.getFare()));
+				}
 				riderDetailsDataService.saveRiderAccountDetails(rider);
 
-				logger.info("Update and persist location details");
-				locationDetailsDataService.saveAllLocationDetails(locationsDetails);
+				if (action.equalsIgnoreCase(MessageConstants.Complete)) {
+					logger.info("Update and persist location details");
+					updateLocationFootfallCount(locationsDetails, trip.getLocation_pickup(), trip.getLocation_drop());
+					locationDetailsDataService.saveAllLocationDetails(locationsDetails);
+				}
 
 				logger.info("Update and persist cab details");
 				cabSelected.setStatus(MessageConstants.Available);
 				cabDetailsDataService.saveCabDetails(cabSelected);
 
 				logger.info("Update and persist trip details");
-				trip.setStatus(MessageConstants.Cancelled);
-				refund = trip.getFare();
-				trip.setFare(0.0);
+				String successMessage = "";
+				if (action.equalsIgnoreCase(MessageConstants.Cancel)) {
+					trip.setStatus(MessageConstants.Cancelled);
+					refund = trip.getFare();
+					trip.setFare(0.0);
+					successMessage = "Trip cancelled successfully";
+				} else if (action.equalsIgnoreCase(MessageConstants.Complete)) {
+					trip.setStatus(MessageConstants.Completed);
+					successMessage = "Trip completed successfully";
+				}
 				tripDetailsDataService.saveTripDetails(trip);
 
 				return new TripDetailsResponse(bookingRequest.getUserName(), cabSelected.getCab_name(),
@@ -357,7 +273,7 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 								trip.getLocation_drop()),
 						cabSelected.getRate(), trip.getFare(), rider.getWallet_balance(),
 						rider.getWallet_balance_onhold(), refund, trip.getStatus(), bookingRequest.getBookingId(),
-						"Trip cancelled successfully");
+						successMessage);
 
 			} else {
 				return new TripDetailsResponse(rider.getUser_name(), null, null, null, null, null, 0.0, 0.0, 0.0, 0.0,
@@ -367,16 +283,6 @@ public class RiderDetailsServiceImpl implements RiderDetailsService {
 			logger.error(MessageConstants.RiderNotFound);
 			return new TripDetailsResponse(trip.getUser_name(), null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0,
 					0.0, null, null, MessageConstants.RiderNotFound);
-		} catch (LocationDetailsNotFoundException locationException) {
-			logger.error(MessageConstants.LocationDetailsNotFound);
-			return new TripDetailsResponse(bookingRequest.getUserName(), null, null, null, trip.getLocation_pickup(),
-					trip.getLocation_drop(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
-					MessageConstants.LocationDetailsNotFound);
-		} catch (CabDetailsNotFoundException cabException) {
-			logger.error(MessageConstants.CabDetailsNotFound);
-			return new TripDetailsResponse(bookingRequest.getUserName(), null, trip.getCab_number(), null,
-					trip.getLocation_pickup(), trip.getLocation_drop(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null, null,
-					MessageConstants.CabDetailsNotFound);
 		} catch (TripDetailsNotFoundException tripException) {
 			logger.error(MessageConstants.TripDetailsNotFound);
 			return new TripDetailsResponse(null, null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null,

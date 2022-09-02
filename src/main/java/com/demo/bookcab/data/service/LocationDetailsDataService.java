@@ -22,9 +22,9 @@ public class LocationDetailsDataService {
 		List<LocationFootfallResponse> locationDetails = new ArrayList<>();
 
 		try {
-			this.locationDetailsRepository.findAll().forEach(station -> {
-				locationDetails.add(new LocationFootfallResponse(station.getLocation_name(), station.getPickup_count(),
-						station.getDrop_count(), ""));
+			this.locationDetailsRepository.findAll().forEach(location -> {
+				locationDetails.add(new LocationFootfallResponse(location.getLocation_name(), location.getPickup_count(),
+						location.getDrop_count(), ""));
 			});
 
 			if (locationDetails.isEmpty()) {

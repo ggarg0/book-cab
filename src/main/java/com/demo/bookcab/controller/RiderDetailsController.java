@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bookcab.dto.RiderInquiry;
 import com.demo.bookcab.dto.RiderInquiryResponse;
+import com.demo.bookcab.constant.MessageConstants;
 import com.demo.bookcab.dto.BookingIdRequest;
 import com.demo.bookcab.dto.TripDetailsResponse;
 import com.demo.bookcab.dto.TripRequest;
@@ -113,7 +114,7 @@ public class RiderDetailsController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsResponse.class)) }) })
 	@PostMapping("complete-trip")
 	public TripDetailsResponse CompleteRiderTrip(@Valid @RequestBody BookingIdRequest bookingIdRequest) {
-		return this.riderDetails.CompleteRiderTrip(bookingIdRequest);
+		return this.riderDetails.RiderTripTransaction(bookingIdRequest, MessageConstants.Complete);
 	}
 
 	/**
@@ -136,6 +137,6 @@ public class RiderDetailsController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsResponse.class)) }) })
 	@PostMapping("cancel-trip")
 	public TripDetailsResponse CancelRiderTrip(@Valid @RequestBody BookingIdRequest bookingIdRequest) {
-		return this.riderDetails.CancelRiderTrip(bookingIdRequest);
+		return this.riderDetails.RiderTripTransaction(bookingIdRequest, MessageConstants.Cancel);
 	}
 }
