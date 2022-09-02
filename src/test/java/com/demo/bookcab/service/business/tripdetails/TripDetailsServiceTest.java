@@ -111,7 +111,7 @@ public class TripDetailsServiceTest {
 	}
 
 	@Test
-	public void testSuccessGetAllTripDetailsSize() {
+	public void testSizeSuccessGetAllTripDetails() {
 		List<Trips> response = this.tripDetailsServiceImpl.getAllTripsDetails();
 		Assertions.assertEquals(3, response.size());
 	}
@@ -131,21 +131,21 @@ public class TripDetailsServiceTest {
 	}
 
 	@Test
-	public void testInvalidBookingRequestGetTripDetailsByUserName() {
+	public void testInvalidBookingGetTripDetailsByUserName() {
 		RiderInquiry riderInquiry = null;
 		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
 		Assertions.assertTrue(MessageConstants.BookingRequestNotValid.equals(response.get(0).getMessage()));
 	}
 
 	@Test
-	public void testRiderNotFoundGetTripDetailsByUserName() {
+	public void testInvalidRiderGetTripDetailsByUserName() {
 		RiderInquiry riderInquiry = new RiderInquiry("2345678908", "4321");
 		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
 		Assertions.assertTrue(MessageConstants.RiderNotFound.equals(response.get(0).getMessage()));
 	}
 
 	@Test
-	public void testTripsNotFoundGetTripDetailsByUserName() {
+	public void testInvalidGetTripDetailsByUserName() {
 		RiderInquiry riderInquiry = new RiderInquiry("2345678901", "4321");
 		List<TripDetailsResponse> response = this.tripDetailsServiceImpl.getTripDetailsByUserName(riderInquiry);
 		Assertions.assertTrue(MessageConstants.TripDetailsNotFound.equals(response.get(0).getMessage()));

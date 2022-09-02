@@ -134,19 +134,13 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testGetAllRiderAccountDetailsSize() {
+	public void testSizeGetAllRiderAccountDetails() {
 		List<Rider> rider = this.riderDetailsServiceImpl.getAllRiderAccountDetails();
 		Assertions.assertEquals(3, rider.size());
 	}
 
 	@Test
-	public void testGetAllRiderAccountDetails() {
-		List<Rider> rider = this.riderDetailsServiceImpl.getAllRiderAccountDetails();
-		Assertions.assertTrue(rider.get(0).getUser_name().equalsIgnoreCase("1234567890"));
-	}
-
-	@Test
-	public void testGetBalanceDetailsForRider() {
+	public void testSuccessGetAllRiderAccountDetails() {
 		List<Rider> rider = this.riderDetailsServiceImpl.getAllRiderAccountDetails();
 		Assertions.assertTrue(rider.get(0).getUser_name().equalsIgnoreCase("1234567890"));
 	}
@@ -159,21 +153,21 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testBalanceinquiryForNullRider() {
+	public void testNullBalanceinquiryForRider() {
 		RiderInquiry ri = null;
 		RiderInquiryResponse rir = this.riderDetailsServiceImpl.getBalanceDetailsForRider(ri);
 		Assertions.assertTrue(MessageConstants.InvalidBalanceInquiry.equals(rir.getMessage()));
 	}
 
 	@Test
-	public void testBalanceinquiryForInvalidRider() {
+	public void testInvalidRiderBalanceinquiryForRider() {
 		RiderInquiry ri = new RiderInquiry("unknown", "1234");
 		RiderInquiryResponse rir = this.riderDetailsServiceImpl.getBalanceDetailsForRider(ri);
 		Assertions.assertTrue(MessageConstants.RiderNotFound.equals(rir.getMessage()));
 	}
 
 	@Test
-	public void testBalanceinquiryForRiderWithInvalidPin() {
+	public void testInvalidPinBalanceinquiryForRider() {
 		RiderInquiry ri = new RiderInquiry("1234567890", "1236");
 		RiderInquiryResponse rir = this.riderDetailsServiceImpl.getBalanceDetailsForRider(ri);
 		Assertions.assertTrue(MessageConstants.InvalidPin.equals(rir.getMessage()));
@@ -218,28 +212,28 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testBookCabForNullRider() {
+	public void testNullBookCabForRider() {
 		TripRequest req = null;
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.InvalidBookingRequest.equals(resp.getMessage()));
 	}
 
 	@Test
-	public void testBookCabForInvalidRider() {
+	public void testInvalidRiderBookCabForRider() {
 		TripRequest req = new TripRequest("2345678908", "4321", "Swift", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.RiderNotFound.equals(resp.getMessage()));
 	}
 
 	@Test
-	public void testBookCabForInvalidCab() {
+	public void testInvalidCabBookCabForRider() {
 		TripRequest req = new TripRequest("2345678901", "4321", "Ertiga", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.CabDetailsNotFound.equals(resp.getMessage()));
 	}
 
 	@Test
-	public void testBookCabForInvalidLocations() {
+	public void testInvalidLocationsBookCabForRider() {
 		TripRequest req = new TripRequest("2345678901", "4321", "Swift", "B1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.LocationDetailsNotFound.equals(resp.getMessage()));
@@ -258,7 +252,7 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testCompleteCabForNullRider() {
+	public void testNullCompleteCabForRider() {
 		TripRequest req = new TripRequest("3456789012", "1234", "Dzire", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.Booked.equals(resp.getStatus()));
@@ -275,7 +269,7 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testCompleteCabForRiderInvalidPin() {
+	public void testInvalidPinCompleteCabForRider() {
 		TripRequest req = new TripRequest("3456789012", "1234", "Swift", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.Booked.equals(resp.getStatus()));
@@ -304,7 +298,7 @@ public class RiderDetailsServiceTest {
 	}
 
 	@Test
-	public void testCompleteCabForRiderMismatchRider() {
+	public void testRiderMismatchCompleteCabForRider() {
 		TripRequest req = new TripRequest("3456789012", "1234", "Alto", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.Booked.equals(resp.getStatus()));
@@ -313,15 +307,15 @@ public class RiderDetailsServiceTest {
 		TripDetailsResponse complete = this.riderDetailsServiceImpl.RiderTripTransaction(booking,
 				MessageConstants.Complete);
 		Assertions.assertTrue(MessageConstants.RiderMismatchFound.equals(complete.getMessage()));
-		
+
 		BookingIdRequest bookingComplete = new BookingIdRequest("3456789012", "1234", resp.getBookingId());
 		TripDetailsResponse completeResp = this.riderDetailsServiceImpl.RiderTripTransaction(bookingComplete,
 				MessageConstants.Complete);
 		Assertions.assertTrue(MessageConstants.Completed.equals(completeResp.getStatus()));
 	}
-	
+
 	@Test
-	public void testCompleteCabForRiderInvalidRider() {
+	public void testInvalidRiderCompleteCabForRider() {
 		TripRequest req = new TripRequest("3456789012", "1234", "Alto", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.Booked.equals(resp.getStatus()));
@@ -330,24 +324,24 @@ public class RiderDetailsServiceTest {
 		TripDetailsResponse complete = this.riderDetailsServiceImpl.RiderTripTransaction(booking,
 				MessageConstants.Complete);
 		Assertions.assertTrue(MessageConstants.RiderNotFound.equals(complete.getMessage()));
-		
+
 		BookingIdRequest bookingComplete = new BookingIdRequest("3456789012", "1234", resp.getBookingId());
 		TripDetailsResponse completeResp = this.riderDetailsServiceImpl.RiderTripTransaction(bookingComplete,
 				MessageConstants.Complete);
 		Assertions.assertTrue(MessageConstants.Completed.equals(completeResp.getStatus()));
 	}
-	
+
 	@Test
-	public void testCompleteCabForRiderInvalidTrip() {
+	public void testInvalidTripCompleteCabForRider() {
 		TripRequest req = new TripRequest("3456789012", "1234", "Alto", "A1", "A6");
 		TripDetailsResponse resp = this.riderDetailsServiceImpl.BookCabForRider(req);
 		Assertions.assertTrue(MessageConstants.Booked.equals(resp.getStatus()));
 
-		BookingIdRequest booking = new BookingIdRequest("2345678923", "4321",  1235698774l);
+		BookingIdRequest booking = new BookingIdRequest("2345678923", "4321", 1235698774l);
 		TripDetailsResponse complete = this.riderDetailsServiceImpl.RiderTripTransaction(booking,
 				MessageConstants.Complete);
 		Assertions.assertTrue(MessageConstants.TripDetailsNotFound.equals(complete.getMessage()));
-		
+
 		BookingIdRequest bookingComplete = new BookingIdRequest("3456789012", "1234", resp.getBookingId());
 		TripDetailsResponse completeResp = this.riderDetailsServiceImpl.RiderTripTransaction(bookingComplete,
 				MessageConstants.Complete);

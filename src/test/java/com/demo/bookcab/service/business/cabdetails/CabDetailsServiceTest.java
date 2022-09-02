@@ -112,7 +112,7 @@ public class CabDetailsServiceTest {
 	}
 
 	@Test
-	public void testUnSuccessGetAllCabDetails() {
+	public void testFailureGetAllCabDetails() {
 		List<Cabs> response = this.cabDetailsServiceImpl.getAllCabDetails();
 		Assertions.assertFalse(response.get(0).getCab_name().equalsIgnoreCase("Alto"));
 	}
@@ -133,7 +133,7 @@ public class CabDetailsServiceTest {
 	}
 
 	@Test
-	public void testUnSuccessGetAvailableCabDetailsByCabName() {
+	public void testInvalidCabGetAvailableCabDetailsByCabName() {
 		CabNameRequest cab = new CabNameRequest("unknown");
 		List<CabDetailsResponse> response = this.cabDetailsServiceImpl.getCabDetailsByCabName(cab);
 		Assertions.assertTrue(MessageConstants.CabDetailsNotFound.equals(response.get(0).getMessage()));
@@ -154,7 +154,7 @@ public class CabDetailsServiceTest {
 	}
 
 	@Test
-	public void testUnSuccessGetAvailableCabDetailsByCabNumber() {
+	public void testInvalidCabGetAvailableCabDetailsByCabNumber() {
 		CabNumberRequest cab = new CabNumberRequest("unknown");
 		CabDetailsResponse response = this.cabDetailsServiceImpl.getCabDetailsByCabNumber(cab);
 		Assertions.assertTrue(MessageConstants.CabDetailsNotFound.equals(response.getMessage()));
