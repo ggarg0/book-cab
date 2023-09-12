@@ -1,4 +1,4 @@
-package com.demo.bookcab.exception.formatter;
+package com.demo.bookcab.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

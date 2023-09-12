@@ -26,7 +26,7 @@ import com.demo.bookcab.entity.Cabs;
 import com.demo.bookcab.entity.Locations;
 import com.demo.bookcab.entity.Rider;
 import com.demo.bookcab.entity.Trips;
-import com.demo.bookcab.exception.formatter.Formatters;
+import com.demo.bookcab.util.Formatters;
 import com.demo.bookcab.exceptions.CabDetailsNotFoundException;
 import com.demo.bookcab.exceptions.InsufficientFundsException;
 import com.demo.bookcab.exceptions.LocationDetailsNotFoundException;
